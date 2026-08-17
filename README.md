@@ -13,3 +13,11 @@ This project is a fork of the original [IllusionChess](https://github.com/pengui
 * **Timers:** Wrote the clock logic to use `Date.now()` timestamps to keep track of time usage.
 * **Seamless Mode Switching:** Players can change between Human and Robot modes for black or white mid-game without resetting the board.
 * **Adjustable Increments:** Fischer-style time increments can be changed on the fly during a match.
+
+### Credits
+
+- Penguins184 (Illusion; IllusionChess)
+- HackerDude (IllusionChess v1/KChess)
+- Chess.JS, ChessBoard.JS
+- Zain Merchant, Minimax Algorithm Inplementation (https://codepen.io/zainmer/pen/jOOBjvv)
+- Ianto Cannon, Timers
