@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kindle chess</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+  <link rel="stylesheet" href="css/chessboard.min.css" type="text/css" />
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">Kindle chess</h1>
+    
+    <div>
+      <label>
+        Start(min):<input type="number" id="black-start-time" value="5" min="0">
+      </label>
+      <label>
+        incr(sec):<input type="number" id="black-increment" value="0" min="0">
+      </label>
+      <span id="black-clock">5:00</span>
+      <label>
+        <input type="radio" name="black-mode" id="black-human" checked>human</label>
+      <label>
+        <input type="radio" name="black-mode" id="black-robot">robot
+      </label>
+      <button id="reset">restart</button>
+    </div>
+    
+    <div id="chessboard"></div>
+    
+    <div>
+      <label>
+        Start(min):<input type="number" id="white-start-time" value="5" min="0">
+      </label>
+      <label>
+        incr(sec):<input type="number" id="white-increment" value="0" min="0">
+      </label>
+      <span id="white-clock">5:00</span>
+      <label>
+        <input type="radio" name="white-mode" id="white-human" checked>human</label>
+      <label>
+        <input type="radio" name="white-mode" id="white-robot">robot
+      </label>
+      <button id="pause">pause</button>
+    </div>
+    
+  </div>
+  
+  <p id="log"></p>
+  
+  <footer>
+    <p>Chessboard made for Kindle. Based on <a href="https://github.com/penguins184/IllusionChess">IllusionChess</a> by penguins184. Released under the MIT License.</p>
+  </footer>
+  
+  <script src="js/jquery.js"></script> 
+  <script src="js/chessboard.min.js"></script> 
+  <script src="js/chess.js"></script> 
+  <script src="script.js"></script> 
+</body>
+</html>

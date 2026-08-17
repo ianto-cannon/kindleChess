@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.container {
+  text-align: center;
+}
+#chessboard {
+  display: block;
+  width: 100%;
+}
+#black-clock, #white-clock {
+  font-weight: bold;
+}
+#log {
+  font-family: monospace;
+}
+footer {
+    text-align: center;
+    font-size: .7em;
+    color: #666;
+}
+input[type="number"] {
+  width: 40px;
+  font-size: 16px;
+  text-align: center;
+  padding: 2px;
+  margin: 0;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
