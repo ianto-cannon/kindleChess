@@ -87,7 +87,7 @@ function checkAndTriggerBot() {
         botTimeoutId = setTimeout(function () {
             if (game.game_over() || isPaused) return;
             var botColor = game.turn();
-            var bm = minimaxroot(1, game, botColor === 'w');
+            var bm = minimaxroot(2, game, botColor === 'w');
             
             // Deduct exact thinking time using the unified lastTickTime baseline
             if (firstMoveMade) {
@@ -326,7 +326,7 @@ for (var i = 0; i < incEls.length; i++) {
     });
 }
 
-// --- AI MINIMAX LOGIC (Depth 1) ---
+// --- AI MINIMAX LOGIC ---
 var pawnevalwhite = [[0,0,0,0,0,0,0,0],[5,5,5,5,5,5,5,5],[1,1,2,3,3,2,1,1],[0.5,0.5,1,2.5,2.5,1,0.5,0.5],[0,0,0,2,2,0,0,0],[0.5,-0.5,-1,0,0,-1,-0.5,0.5],[0.5,1,1,-2,-2,1,1,0.5],[0,0,0,0,0,0,0,0]];
 var pawnevalblack = pawnevalwhite.slice().reverse();
 
@@ -363,12 +363,23 @@ function getpiecevalue(p, x, y) {
 function minimaxroot(d, g, max) {
     var m = g.moves({ verbose: true });
     var bv = max ? -Infinity : Infinity, bm = null;
+    var a = -Infinity, b = Infinity;
+
     for (var i = 0; i < m.length; i++) {
         g.move(m[i]);
-        var v = minimax(d - 1, g, -1e4, 1e4, !max);
+        var v = minimax(d - 1, g, a, b, !max);
         g.undo();
-        if (v === bv && Math.random() < 0.3) bm = m[i];
-        else if (max ? v > bv : v < bv) { bv = v; bm = m[i]; }
+        
+        if (v === bv && Math.random() < 0.3) {
+            bm = m[i];
+        } else if (max ? v > bv : v < bv) {
+            bv = v;
+            bm = m[i];
+        }
+
+        // Narrow bounds at root for subsequent move searches
+        if (max) a = Math.max(a, bv);
+        else b = Math.min(b, bv);
     }
     return bm;
 }
