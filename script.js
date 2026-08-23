@@ -87,7 +87,7 @@ function checkAndTriggerBot() {
         botTimeoutId = setTimeout(function () {
             if (game.game_over() || isPaused) return;
             var botColor = game.turn();
-            var bm = minimaxroot(2, game, botColor === 'w');
+            var bm = minimaxroot(1, game, botColor === 'w');
             
             // Deduct exact thinking time using the unified lastTickTime baseline
             if (firstMoveMade) {
@@ -363,11 +363,11 @@ function getpiecevalue(p, x, y) {
 function minimaxroot(d, g, max) {
     var m = g.moves({ verbose: true });
     var bv = max ? -Infinity : Infinity, bm = null;
-    var a = -Infinity, b = Infinity;
+    var a = -1e4, b = 1e4;
 
     for (var i = 0; i < m.length; i++) {
         g.move(m[i]);
-        var v = minimax(d - 1, g, a, b, !max);
+        var v = minimax(d - 1, g,  a, b, !max);
         g.undo();
         
         if (v === bv && Math.random() < 0.3) {
@@ -378,8 +378,8 @@ function minimaxroot(d, g, max) {
         }
 
         // Narrow bounds at root for subsequent move searches
-        if (max) a = Math.max(a, bv);
-        else b = Math.min(b, bv);
+        //if (max) a = Math.max(a, bv);
+        //else b = Math.min(b, bv);
     }
     return bm;
 }
