@@ -1,18 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Kindle chess</title>
+  <title>Kindle Chess - Minimalist Web Chess App for E-Ink Screens</title>
+  <meta name="title" content="Kindle Chess - Minimalist Web Chess App for E-Ink Screens">
+  <meta name="description" content="Play chess online or against a bot optimized for Amazon Kindle and e-ink web browsers. Minimalist design, fast loading, and customizable move clocks.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index, follow">
+  <meta name="google-site-verification" content="__BBZbOGjJCExcoruESLV0F1YiFPIM-7ZS9nCoBF8Ec" /> 
+  <link rel="canonical" href="https://chess.jantuss.pp.ua/" />
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://chess.jantuss.pp.ua/">
+  <meta property="og:title" content="Kindle Chess - Web Chess for E-Paper & Kindle Browsers">
+  <meta property="og:description" content="A lightweight, fast web chess application designed specifically to run smoothly on Kindle e-readers and low-power devices.">
+  <meta property="og:image" content="https://chess.jantuss.pp.ua/opera.jpg">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://chess.jantuss.pp.ua/">
+  <meta property="twitter:title" content="Kindle Chess - Minimalist Web Chess App">
+  <meta property="twitter:description" content="Play chess online or against a bot optimized for Amazon Kindle and e-ink web browsers.">
   <link rel="stylesheet" type="text/css" media="screen" href="style.css">
   <link rel="stylesheet" href="chessboard.min.css" type="text/css" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link rel="icon" href="/favicon.png"  type="image/png" sizes="192x192" />
+  <link rel="icon" href="wK.svg" type="image/svg+xml" />
+  <link rel="icon" href="/wK.png" type="image/png" sizes="60x60" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Kindle Chess",
+    "url": "https://chess.jantuss.pp.ua/",
+    "description": "A lightweight chess application designed for Kindle e-ink browsers and minimalist devices.",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "All (Web Browser)"
+  }
+  </script>
 </head>
 <body>
   <div class="container">
-    <h1 id="title">Kindle chess</h1>
+    <h1 id="title">Kindle Chess</h1>
     
     <div>
       <label>
@@ -47,11 +72,10 @@
       </label>
       <button id="pause">pause</button>
     </div>
-    
   </div>
   
   <p id="log"></p>
-  
+
   <footer>
     <p>Chessboard made for Kindle. Based on <a href="https://github.com/penguins184/IllusionChess">IllusionChess</a> by penguins184. Released under the MIT License.</p>
   </footer>
