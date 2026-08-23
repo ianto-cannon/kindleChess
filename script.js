@@ -87,7 +87,7 @@ function checkAndTriggerBot() {
         botTimeoutId = setTimeout(function () {
             if (game.game_over() || isPaused) return;
             var botColor = game.turn();
-            var bm = minimaxroot(2, game, botColor === 'w');
+            var bm = minimaxroot(1, game, botColor === 'w');
             
             // Deduct exact thinking time using the unified lastTickTime baseline
             if (firstMoveMade) {
@@ -129,6 +129,28 @@ function resetgame() {
     applyClockSettings();
     lastTickTime = Date.now(); // Reset time baseline
     setTimeout(checkAndTriggerBot, 500);
+}
+
+function undomove() {
+    if (game.history().length === 0) return; // Don't undo if no moves have been made
+
+    // Cancel any pending bot move so it doesn't fire while we are undoing
+    if (botTimeoutId) { clearTimeout(botTimeoutId); botTimeoutId = null; }
+
+    // Undo the last move
+    game.undo();
+
+    board.position(game.fen(), false);
+    removegreysquares();
+    selectedsquare = null;
+
+    // Reset the title if the game was over or in check
+    if (!game.game_over()) {
+        document.getElementById("title").textContent = game.in_check() ? "Check!" : "Kindle chess";
+    }
+
+    updateLog(); // This will also update captured pieces and the eval score
+    updateClockDisplay();
 }
 
 function handleModeChange() {
@@ -444,3 +466,4 @@ window.addEventListener("resize", function() {
 // --- INIT ---
 applyClockSettings();
 document.getElementById("reset").addEventListener("click", resetgame);
+document.getElementById("undo").addEventListener("click", undomove);
