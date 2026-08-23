@@ -151,6 +151,11 @@ function undomove() {
 
     updateLog(); // This will also update captured pieces and the eval score
     updateClockDisplay();
+    if (!isPaused) {
+        isPaused = true;
+        document.getElementById("pause").textContent = "resume";
+        stopTimer();
+    }
 }
 
 function handleModeChange() {
