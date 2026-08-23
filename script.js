@@ -160,28 +160,25 @@ function updateCapturedPieces() {
             var capturedPiece = history[i].captured; // e.g., 'p', 'n', 'q'
             var moverColor = history[i].color;       // 'w' or 'b'
 
-            // If White made the move, White captured a Black piece (bP.svg, etc.)
             if (moverColor === 'w') {
                 whiteCaptures.push(capturedPiece);
             } else {
-                // Black made the move, Black captured a White piece (wP.svg, etc.)
                 blackCaptures.push(capturedPiece);
             }
         }
     }
 
-    // Sort the captured pieces by value
     whiteCaptures.sort(function(a, b) { return pieceOrder[a] - pieceOrder[b]; });
     blackCaptures.sort(function(a, b) { return pieceOrder[a] - pieceOrder[b]; });
 
-    // Generate the HTML image tags
+    // Uppercase piece letters (e.g., bP.svg, wQ.svg) to match standard chessboard.js asset naming
     var whiteHTML = "";
     for (var w = 0; w < whiteCaptures.length; w++) {
-        whiteHTML += '<img src="b' + whiteCaptures[w] + '.svg" alt="captured">';
+        whiteHTML += '<img src="b' + whiteCaptures[w].toUpperCase() + '.svg" alt="captured">';
     }
     var blackHTML = "";
     for (var b = 0; b < blackCaptures.length; b++) {
-        blackHTML += '<img src="w' + blackCaptures[b] + '.svg" alt="captured">';
+        blackHTML += '<img src="w' + blackCaptures[b].toUpperCase() + '.svg" alt="captured">';
     }
 
     document.getElementById("white-captured").innerHTML = whiteHTML;
@@ -285,11 +282,9 @@ document.getElementById("chessboard").parentNode.addEventListener("click", funct
 document.getElementById("pause").addEventListener("click", function() {
     if (game.game_over()) return;
     if (isPaused) {
-        // Shift lastTickTime forward by the exact pause duration to prevent drift
         lastTickTime += (Date.now() - pauseStartTime);
         isPaused = false; this.textContent = "pause"; startTimer(); checkAndTriggerBot();
     } else {
-        // Deduct any accrued time before pausing
         if (firstMoveMade) {
             var now = Date.now();
             var elapsed = Math.floor((now - lastTickTime) / 1000);
@@ -334,12 +329,19 @@ for (var i = 0; i < incEls.length; i++) {
 // --- AI MINIMAX LOGIC (Depth 1) ---
 var pawnevalwhite = [[0,0,0,0,0,0,0,0],[5,5,5,5,5,5,5,5],[1,1,2,3,3,2,1,1],[0.5,0.5,1,2.5,2.5,1,0.5,0.5],[0,0,0,2,2,0,0,0],[0.5,-0.5,-1,0,0,-1,-0.5,0.5],[0.5,1,1,-2,-2,1,1,0.5],[0,0,0,0,0,0,0,0]];
 var pawnevalblack = pawnevalwhite.slice().reverse();
-var knighteval = [[-5,-4,-3,-3,-3,-3,-4,-5],[-4,-2,0,0,0,0,-2,-4],[-3,0,1,1.5,1.5,1,0,-3],[-3,0.5,1.5,2,2,1.5,0.5,-3],[-3,0,1.5,2,2,1.5,0,-3],[-3,0.5,1,1.5,1.5,1,0.5,-3],[-4,-2,0,0.5,0.5,0,-2,-4],[-5,-4,-3,-3,-3,-3,-4,-5]];
+
+var knightevalwhite = [[-5,-4,-3,-3,-3,-3,-4,-5],[-4,-2,0,0,0,0,-2,-4],[-3,0,1,1.5,1.5,1,0,-3],[-3,0.5,1.5,2,2,1.5,0.5,-3],[-3,0,1.5,2,2,1.5,0,-3],[-3,0.5,1,1.5,1.5,1,0.5,-3],[-4,-2,0,0.5,0.5,0,-2,-4],[-5,-4,-3,-3,-3,-3,-4,-5]];
+var knightevalblack = knightevalwhite.slice().reverse();
+
 var bishopevalwhite = [[-2,-1,-1,-1,-1,-1,-1,-2],[-1,0,0,0,0,0,0,-1],[-1,0,0.5,1,1,0.5,0,-1],[-1,0.5,0.5,1,1,0.5,0.5,-1],[-1,0,1,1,1,1,0,-1],[-1,1,1,1,1,1,1,-1],[-1,0.5,0,0,0,0,0.5,-1],[-2,-1,-1,-1,-1,-1,-1,-2]];
 var bishopevalblack = bishopevalwhite.slice().reverse();
+
 var rookevalwhite = [[0,0,0,0,0,0,0,0],[0.5,1,1,1,1,1,1,0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[0,0,0,0.5,0.5,0,0,0]];
 var rookevalblack = rookevalwhite.slice().reverse();
-var evalqueen = [[-2,-1,-1,-0.5,-0.5,-1,-1,-2],[-1,0,0,0,0,0,0,-1],[-1,0,0.5,0.5,0.5,0.5,0,-1],[-0.5,0,0.5,0.5,0.5,0.5,0,-0.5],[0,0,0.5,0.5,0.5,0.5,0,-0.5],[-1,0.5,0.5,0.5,0.5,0.5,0,-1],[-1,0,0.5,0,0,0,0,-1],[-2,-1,-1,-0.5,-0.5,-1,-1,-2]];
+
+var evalqueenwhite = [[-2,-1,-1,-0.5,-0.5,-1,-1,-2],[-1,0,0,0,0,0,0,-1],[-1,0,0.5,0.5,0.5,0.5,0,-1],[-0.5,0,0.5,0.5,0.5,0.5,0,-0.5],[0,0,0.5,0.5,0.5,0.5,0,-0.5],[-1,0.5,0.5,0.5,0.5,0.5,0,-1],[-1,0,0.5,0,0,0,0,-1],[-2,-1,-1,-0.5,-0.5,-1,-1,-2]];
+var evalqueenblack = evalqueenwhite.slice().reverse();
+
 var kingevalwhite = [[-3,-4,-4,-5,-5,-4,-4,-3],[-3,-4,-4,-5,-5,-4,-4,-3],[-3,-4,-4,-5,-5,-4,-4,-3],[-3,-4,-4,-5,-5,-4,-4,-3],[-2,-3,-3,-4,-4,-3,-3,-2],[-1,-2,-2,-2,-2,-2,-2,-1],[2,2,0,0,0,0,2,2],[2,3,1,0,0,1,3,2]];
 var kingevalblack = kingevalwhite.slice().reverse();
 
@@ -348,10 +350,10 @@ function getpiecevalue(p, x, y) {
     var w = p.color === "w", b = 0;
     switch (p.type) {
         case "p": b = 10 + (w ? pawnevalwhite[y][x] : pawnevalblack[y][x]); break;
-        case "n": b = 30 + knighteval[y][x]; break;
+        case "n": b = 30 + (w ? knightevalwhite[y][x] : knightevalblack[y][x]); break;
         case "b": b = 30 + (w ? bishopevalwhite[y][x] : bishopevalblack[y][x]); break;
         case "r": b = 50 + (w ? rookevalwhite[y][x] : rookevalblack[y][x]); break;
-        case "q": b = 90 + evalqueen[y][x]; break;
+        case "q": b = 90 + (w ? evalqueenwhite[y][x] : evalqueenblack[y][x]); break;
         case "k": b = 900 + (w ? kingevalwhite[y][x] : kingevalblack[y][x]); break;
         default: return 0;
     }
@@ -372,8 +374,18 @@ function minimaxroot(d, g, max) {
 }
 
 function minimax(d, g, a, b, max) {
-    if (d === 0) return evaluateboard(g.board()); 
     var m = g.moves({ verbose: true });
+
+    // Distinguish checkmate loss from draw/stalemate
+    if (m.length === 0) {
+        if (g.in_checkmate()) {
+            return max ? -99999 : 99999;
+        }
+        return 0; // Stalemate / Draw evaluate neutrally
+    }
+    
+    if (d === 0) return evaluateboard(g.board()); 
+    
     if (max) {
         var best = -Infinity;
         for (var i = 0; i < m.length; i++) {
@@ -408,11 +420,7 @@ function updateEvalScore() {
     var score = evaluateboard(game.board());
     var pawns = (score / 10).toFixed(2);
     
-    // Add a "+" sign for positive scores so it looks like a real chess engine
     var displayScore = (score > 0 ? "+" : "") + pawns;
-    
-    // If it's White's turn, positive is good for White. If Black's turn, positive is actually bad for Black.
-    // We will just display the raw evaluation from White's perspective.
     document.getElementById("eval-score").textContent = "Eval: " + displayScore;
 }
 
@@ -425,5 +433,3 @@ window.addEventListener("resize", function() {
 // --- INIT ---
 applyClockSettings();
 document.getElementById("reset").addEventListener("click", resetgame);
-
-
