@@ -87,7 +87,7 @@ function checkAndTriggerBot() {
         botTimeoutId = setTimeout(function () {
             if (game.game_over() || isPaused) return;
             var botColor = game.turn();
-            var bm = minimaxroot(1, game, botColor === 'w');
+            var bm = minimaxroot(2, game, botColor === 'w');
             
             // Deduct exact thinking time using the unified lastTickTime baseline
             if (firstMoveMade) {
@@ -378,8 +378,8 @@ function minimaxroot(d, g, max) {
         }
 
         // Narrow bounds at root for subsequent move searches
-        //if (max) a = Math.max(a, bv);
-        //else b = Math.min(b, bv);
+        if (max) a = Math.max(a, bv);
+        else b = Math.min(b, bv);
     }
     return bm;
 }
