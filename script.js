@@ -120,6 +120,9 @@ function resetgame() {
     removegreysquares();
     selectedsquare = null;
     document.getElementById("log").textContent = "";
+    document.getElementById("white-captured").innerHTML = "";
+    document.getElementById("black-captured").innerHTML = "";
+    document.getElementById("eval-score").textContent = "Eval: 0.00";
     isPaused = false;
     document.getElementById("pause").textContent = "pause";
     document.getElementById("title").textContent = "Kindle chess";
@@ -143,6 +146,48 @@ function handleModeChange() {
     }
 }
 
+// --- CAPTURED PIECES ---
+// Sort order: Queen, Rook, Bishop, Knight, Pawn
+var pieceOrder = { 'q': 1, 'r': 2, 'b': 3, 'n': 4, 'p': 5 };
+
+function updateCapturedPieces() {
+    var history = game.history({ verbose: true });
+    var whiteCaptures = [];
+    var blackCaptures = [];
+
+    for (var i = 0; i < history.length; i++) {
+        if (history[i].captured) {
+            var capturedPiece = history[i].captured; // e.g., 'p', 'n', 'q'
+            var moverColor = history[i].color;       // 'w' or 'b'
+
+            // If White made the move, White captured a Black piece (bP.svg, etc.)
+            if (moverColor === 'w') {
+                whiteCaptures.push(capturedPiece);
+            } else {
+                // Black made the move, Black captured a White piece (wP.svg, etc.)
+                blackCaptures.push(capturedPiece);
+            }
+        }
+    }
+
+    // Sort the captured pieces by value
+    whiteCaptures.sort(function(a, b) { return pieceOrder[a] - pieceOrder[b]; });
+    blackCaptures.sort(function(a, b) { return pieceOrder[a] - pieceOrder[b]; });
+
+    // Generate the HTML image tags
+    var whiteHTML = "";
+    for (var w = 0; w < whiteCaptures.length; w++) {
+        whiteHTML += '<img src="b' + whiteCaptures[w] + '.svg" alt="captured">';
+    }
+    var blackHTML = "";
+    for (var b = 0; b < blackCaptures.length; b++) {
+        blackHTML += '<img src="w' + blackCaptures[b] + '.svg" alt="captured">';
+    }
+
+    document.getElementById("white-captured").innerHTML = whiteHTML;
+    document.getElementById("black-captured").innerHTML = blackHTML;
+}
+
 // --- LOG & HIGHLIGHTING ---
 function updateLog() {
     var history = game.history(), logText = "";
@@ -150,6 +195,8 @@ function updateLog() {
         logText += (i % 2 === 0) ? (i / 2 + 1) + ". " + history[i] : "  " + history[i] + "\n";
     }
     document.getElementById("log").textContent = logText;
+    updateCapturedPieces();
+    updateEvalScore();
 }
 
 var highlightedSquares = [];
@@ -354,6 +401,19 @@ function evaluateboard(bd) {
     var t = 0;
     for (var y = 0; y < 8; y++) for (var x = 0; x < 8; x++) t += getpiecevalue(bd[y][x], x, y);
     return t;
+}
+
+// --- EVALUATION SCORE ---
+function updateEvalScore() {
+    var score = evaluateboard(game.board());
+    var pawns = (score / 10).toFixed(2);
+    
+    // Add a "+" sign for positive scores so it looks like a real chess engine
+    var displayScore = (score > 0 ? "+" : "") + pawns;
+    
+    // If it's White's turn, positive is good for White. If Black's turn, positive is actually bad for Black.
+    // We will just display the raw evaluation from White's perspective.
+    document.getElementById("eval-score").textContent = "Eval: " + displayScore;
 }
 
 window.addEventListener("resize", function() {
